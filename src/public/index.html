@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>URL Shortener</title>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+        <style>
+            main {
+                margin-top:30vh!important;
+            }
+        </style>
+    </head>
+    <body>
+        <main class="container column is-three-quarters-tablet is-two-thirds-desktop is-half-widescreen is-one-third-fullhd">
+            <h1 class="title is-center is-2">URL Shortener</h1>
+
+            <div class="field has-addons my-5">
+                <div class="control is-expanded">
+                    <div class=" is-fullwidth">
+                        <input id="input" type="text" placeholder="insert your link here" oninput="parseInputUrl()" class="input"/>
+                    </div>
+                </div>
+                <div class="control">
+                    <button onclick="pasteLink()" class="button">Paste</button>
+                </div>
+                <div class="control">
+                    <button id="button" onclick="generateLink()" disabled class="button is-primary">Shorten</button>
+                </div>
+            </div>
+
+            <div id="output" class="notification is-primary is-light" hidden></div>
+            <div id="error" class="notification is-danger is-light" hidden></div>
+        </main>
+
+        <script>
+            function getInputUrl() {
+                return document.getElementById('input')
+            }
+
+            function getButton() {
+                return document.getElementById('button')
+            }
+
+            function getOutputUrl() {
+                return document.getElementById('output')
+            }
+
+            function getError() {
+                return document.getElementById('error')
+            }
+
+            function parseInputUrl() {
+                const url = getInputUrl().value
+                try {
+                    const newUrl = new URL(url)
+                    if(newUrl.hostname == window.location.hostname) throw 'Link already shortened'
+
+                    getButton().disabled = false
+                    getError().hidden = true
+                }
+                catch(err) {
+                    getButton().disabled = true
+                    getError().hidden = false
+                    getError().innerHTML = 'Invalid Url'
+                }
+            }
+
+            async function pasteLink() {
+                getInputUrl().value = await navigator.clipboard.readText()
+                parseInputUrl()
+            }
+
+            async function generateLink() {
+
+                try{
+                    getButton().disabled = true
+
+                    const origin = window.location.origin
+                    const requestUrl = new URL(document.getElementById('input').value).toString()
+
+                    const response = await fetch(origin + '/shorten', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({url: requestUrl})
+                    })
+
+                    const { uuid } = await response.json()
+                    const responseUrl = new URL(uuid, origin).toString()
+
+                    getOutputUrl().hidden = false
+                    getOutputUrl().innerHTML = responseUrl
+                    getError().hidden = true
+                }
+                catch(err) {
+                    getButton().disabled = false
+                    getOutputUrl().hidden = true
+                    getError().innerHTML = err.toString()
+                    getError().hidden = false
+                }
+            }
+        </script>
+    </body>
+</html>
