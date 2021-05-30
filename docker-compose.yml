@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:alpine
+
+  server:
+    build: .
+    environment:
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+
+  localtunnel:
+    build:
+      context: .
+      dockerfile: lt.Dockerfile
+    command: "lt --port 3000 --local-host server"
+    depends_on:
+      - server
