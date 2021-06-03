@@ -1,6 +1,6 @@
 # URL Generator
 
-A simple URL Generator written powered by modern technologies.
+A simple URL Generator powered by modern technologies.
 
 ### Run the app
 
