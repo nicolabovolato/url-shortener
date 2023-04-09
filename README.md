@@ -1,25 +1,28 @@
-# URL Generator
+# URL Shortener
 
-A simple URL Generator powered by modern technologies.
+A simple URL shortener powered by modern technologies.
+
+![](img.png)
 
 ### Run the app
 
- #### `docker-compose up -d`
- #### `docker-compose logs localtunnel`
+#### `docker-compose up -d`
+
+#### `docker-compose logs localtunnel`
 
 ## Technologies
 
- ### Frontend
+### Frontend
 
-  - `Bulma`
+-   `Bulma`
 
- ### Backend
+### Backend
 
-  - `Redis`
-  - `Fastify`
+-   `Redis`
+-   `Fastify`
 
- ### Putting it all together
+### Putting it all together
 
-  - `Docker`
-  - `docker-compose`
-  - `localtunnel`
+-   `Docker`
+-   `docker-compose`
+-   `localtunnel`
